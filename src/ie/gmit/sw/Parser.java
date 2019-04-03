@@ -47,7 +47,6 @@ public class Parser {
 
 			while ((next = ignoreFile.readLine()) != null) {
 
-				// skip blank lines
 				if (next.isEmpty())
 					continue;
 
@@ -71,7 +70,7 @@ public class Parser {
 		// O(n^2)
 		while ((next = inputFile.readLine()) != null) {
 
-			// Add every word in the line to an array, using spaces as delimiters.
+			// Add every word in each line of the file to an array, using spaces as delimiters.
 			String[] words = next.toLowerCase().split(" ");
 			processWords(words);
 		}
@@ -85,7 +84,7 @@ public class Parser {
 			Document doc = Jsoup.connect(url).get();
 			String content = doc.select("p").text(); // extract the text between all <p> tags
 
-			// Add every word in the line to an array, using spaces as delimiters.
+			// Add every word in content to an array, using spaces as delimiters.
 			String[] words = content.toLowerCase().split(" ");
 			processWords(words);
 			sortMap();	
@@ -108,7 +107,7 @@ public class Parser {
 	}
 
 	private String stripPunctuation(String word) {		
-		// Credit: Patrick Parker - https://stackoverflow.com/a/43171912
+		// Source: Patrick Parker - https://stackoverflow.com/a/43171912
 		return word.replaceAll("(?:(?<!\\S)\\p{Punct}+)|(?:\\p{Punct}+(?!\\S))", "");
 	}
 
@@ -121,18 +120,18 @@ public class Parser {
 			freq = map.get(word); // get the current frequency of the word
 			map.put(word, ++freq);
 		}
-		else // First occurrence of this word. Set the frequency to 1
+		else // First occurrence of this word: Set the frequency to 1
 			map.put(word, 1); 
 	}
 	
 	// Add each word in the Map to a PriorityQueue. 
-	// Words are sorted each time a new element is added based on their frequencies by using the compareTo() method defined in Word.
+	// Words are sorted each time a new element is added based on their frequencies by using the compareTo() method defined in Word.java
 	private void sortMap() {
 		Set<String> keys = map.keySet(); // Add each key contained in the Map to a Set. O(1)
 	
 		// Iterate over each of the keys in the Set, instantiate a new Word object, and add it to the PriorityQueue. 
-		// Adding to a PriorityQueue has a time complexity of O(log n) 
+		// O(n log n)
 		for(String key : keys)
-			wordQ.offer(new Word(key, map.get(key)));
+			wordQ.offer(new Word(key, map.get(key))); // Offering to a PriorityQueue has a time complexity of O(log n) 
 	}
 }

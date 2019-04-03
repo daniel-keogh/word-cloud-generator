@@ -46,7 +46,7 @@ public class ImageGenerator {
 			if (j > max) max = j;
 			if (j < min) min = j;
 			
-			while ((!wordQ.isEmpty()) && counter < maxWords) { // isEmpty runs in constant time O(1). 
+			while ((!wordQ.isEmpty()) && counter < maxWords) { // isEmpty() runs in constant time O(1). 
 				wordFreq = wordQ.poll(); // Calling poll() will return the highest priority item in the queue. O(log n)
 				
 				graphics.setFont(new Font(fontFamily[GetRandom.generate(0, fontFamily.length - 1)], fontStyle[GetRandom.generate(0, fontStyle.length - 1)], scale(wordFreq.getFrequency(), min, max)));

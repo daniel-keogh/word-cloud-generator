@@ -30,10 +30,10 @@ public class Colours {
 	}
 	
 	// Retrieves the colours of the words to be displayed in the image. 
-	// If a custom colour scheme was set at the menu then use that, otherwise randomly select one of the defaults.
+	// If a custom colour scheme was set at the menu then use that one, otherwise randomly select one of the defaults.
 	public static String[] getColourScheme() {
 		
-		if (!customColourScheme.isEmpty()) { // isEmpty runs in constant time O(1). 
+		if (!customColourScheme.isEmpty()) { // isEmpty() runs in constant time O(1). 
 			String[] customColours = new String[customColourScheme.size()]; // calling size() on a HashSet is O(1)
 			customColours = customColourScheme.toArray(customColours); 	// Convert the Set to a String[] - O(n)
 			return customColours;
@@ -47,14 +47,15 @@ public class Colours {
 	}
 	
 	public static void setCustomColourScheme() {
+		final int COLOUR_CODE_LEN = 7;
 		String colour;
 		char ans;
 		int numColours = 0;
 		boolean invalid = true;
 
 		// Make sure the Set is empty (in case the user already set a custom colour scheme).
-		if (!customColourScheme.isEmpty()) // isEmpty returns the result of size == 0 and runs in constant time O(1).
-			customColourScheme.clear(); // HashSet clear calls the map.clear() which iterates over each element and sets them to null O(n).
+		if (!customColourScheme.isEmpty()) // isEmpty() returns the result of size == 0 and runs in constant time O(1).
+			customColourScheme.clear(); // HashSet clear() calls map.clear() which iterates over each element in the structure and sets them to null O(n).
 		
 		do {
 			try {
@@ -62,13 +63,13 @@ public class Colours {
 				numColours = console.nextInt();
 				
 				if (numColours < 0) {
-					System.out.println("Please enter a positive number (or zero to just use a default).");
+					System.out.println("Please enter a positive integer (or 0 to just use a default).");
 					continue;
 				}
 				else 
 					invalid = false;
 			} catch (InputMismatchException e) {
-				System.out.println("[Error] Please enter a number.");
+				System.out.println("[Error] Please enter an integer.");
 				console.next();
 				continue;
 			} 
@@ -76,7 +77,7 @@ public class Colours {
 		
 		
 		if (numColours != 0) {
-			System.out.printf("Enter %d hex colour codes to use:\n", numColours);
+			System.out.printf("Enter %d hex colour codes to use (eg. format: #ff0000):\n", numColours);
 			
 			int counter = 1;
 			while (customColourScheme.size() < numColours) { // size() runs in constant time
@@ -87,7 +88,7 @@ public class Colours {
 				if (!colour.startsWith("#")) // append a '#' if it wasn't added by the user
 					colour = "#" + colour;
 
-				if (colour.length() == 7) {
+				if (colour.length() == COLOUR_CODE_LEN) {
 					try {
 						Color.decode(colour);
 					} catch (NumberFormatException e) {
@@ -95,7 +96,7 @@ public class Colours {
 						continue;
 					}				
 					
-					// A Set is used over an ArrayList to prevent duplicates & because contains for a HashSet is O(1) compared to O(n) for a list
+					// A Set is used over an ArrayList to prevent duplicates & because calling contains() on a HashSet is O(1) compared to O(n) on a List.
 					if (customColourScheme.contains(colour)) {			
 						System.out.println("You already entered that colour. Enter a different one.");
 						continue;

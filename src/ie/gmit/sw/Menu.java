@@ -51,23 +51,17 @@ public class Menu {
 			
 			setURL();
 			
-			// Try to set the imageFileName to the name of the website
 			try {
 				Document doc = Jsoup.connect(url).get(); 
 				imageFileName = doc.title().substring(doc.title().lastIndexOf(" - ")).replace(" - ", "") + ".png";
+				imageFileName = removeInvalidChars(imageFileName).trim();
+				System.out.println(imageFileName);
 			} catch (Exception e) {
-				imageFileName = "wordcloud.png";
+				imageFileName = "WordcloudURL.png";
 			}
 		}
 		
 		maxWords = DEFAULT_MAX_WORDS;
-	}
-
-	public boolean isContentFromFile() {
-		if (contentIsFromFile)
-			return true;
-		else 
-			return false;
 	}
 	
 	public String getInputFileName() {
@@ -98,7 +92,7 @@ public class Menu {
 		boolean invalid = true;
 		
 		do {
-			System.out.print("Enter the full URL: ");
+			System.out.print("Enter the (full) URL you want to parse: ");
 			url = console.next();
 			
 			try {
@@ -125,16 +119,14 @@ public class Menu {
 	
 	// Set the file name of the word-cloud image to save.
 	public void setImageFileName() {
-		boolean invalid = true;
 		Scanner console = new Scanner(System.in);
+		boolean invalid = true;
 		
 		do {
 			System.out.print("Enter a name for the PNG file: ");
-			imageFileName = console.nextLine();
+			imageFileName = removeInvalidChars(console.nextLine()).trim();
 			
-			if (imageFileName.matches("[\\\\/:\"*?<>|]+")) // check for illegal characters in (Windows) filename
-				System.out.println("That filename contains forbidden characters. Try again.");
-			else 
+			if (!imageFileName.isEmpty())
 				invalid = false;
 		} while (invalid);
 		
@@ -159,7 +151,7 @@ public class Menu {
 				System.out.printf("Enter the maximum number of words to display in the wordcloud (current is %d): ", maxWords);
 				maxWords = Math.abs(console.nextInt());
 			} catch (InputMismatchException e) {
-				System.out.println("[Error] Please enter a number.");
+				System.out.println("[Error] Please enter an integer.");
 				console.next();
 				continue;
 			}
@@ -251,6 +243,19 @@ public class Menu {
 		else {
 			System.out.printf("[Error] Cannot open the file \"%s\" (Desktop not supported).\n", Parser.getIgnoreFileName());
 		}	
+	}
+	
+	// Removes any illegal characters in (Windows) filename & replaces them with underscores.
+	private String removeInvalidChars(String filename) {
+		// Source: CoderCroc - https://stackoverflow.com/a/31564206
+		return filename.replaceAll("[\\\\\\\\/:*?\\\"<>|]", "_");
+	}
+	
+	public boolean isContentFromFile() {
+		if (contentIsFromFile)
+			return true;
+		else 
+			return false;
 	}
 
 	@Override

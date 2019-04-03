@@ -21,10 +21,10 @@ public class Runner {
 		Menu menu = new Menu();
 		menu.displayMenu();
 		
-		runTime = System.currentTimeMillis();
-		
 		Parser parser = new Parser();
 		parser.parseIgnoreFile();
+		
+		runTime = System.currentTimeMillis();
 		
 		if (menu.isContentFromFile())
 			parser.parseInput(new FileInputStream(menu.getInputFileName()));
