@@ -5,7 +5,8 @@ public class Word implements Comparable<Word> {
 	private String word;
 	private int frequency;
 	
-	public Word() {}
+	public Word() {
+	}
 	
 	public Word(String word, Integer frequency) {
 		setWord(word);
@@ -30,10 +31,9 @@ public class Word implements Comparable<Word> {
 	
 	@Override
 	public String toString() {
-		return "Word [word=" + word + " frequency=" + frequency + "]";
+		return frequency + "  " + word;
 	}
 
-	// A PriorityQueue assigns priority based on the implementation of Comparable.
 	@Override
 	public int compareTo(Word word) {
 		return word.frequency - this.frequency;

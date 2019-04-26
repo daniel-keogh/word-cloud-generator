@@ -2,7 +2,7 @@ package ie.gmit.sw;
 
 import java.awt.Desktop;
 import java.io.File;
-import java.io.IOException;
+import java.net.URL;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -40,22 +40,25 @@ public class Menu {
 			
 			setInputFileName();
 			
-			// Set the imageFileName to be the same as the inputFileName.png by default
+			// Set the imageFileName to be the same as the inputFileName.png by default.
+			// Removes invalid chars in case a path was entered.
 			if (inputFileName.contains("."))
-				imageFileName = inputFileName.substring(0, inputFileName.lastIndexOf('.')) + ".png";	
-			else
-				imageFileName += ".png";
+				imageFileName = removeInvalidChars(inputFileName.substring(0, inputFileName.lastIndexOf('.')) + ".png");	
+			else 
+				imageFileName = removeInvalidChars(inputFileName + ".png");
 		}	
 		else {
 			contentIsFromFile = false;
 			
 			setURL();
 			
+			// make sure jsoup is available & set the name the of image file to the pages title.
 			try {
 				Document doc = Jsoup.connect(url).get(); 
-				imageFileName = doc.title().substring(doc.title().lastIndexOf(" - ")).replace(" - ", "") + ".png";
-				imageFileName = removeInvalidChars(imageFileName).trim();
-				System.out.println(imageFileName);
+				imageFileName = removeInvalidChars(doc.title()+".png").trim();
+			} catch (NoClassDefFoundError e) {
+				System.out.println("[Error] No jsoup.jar file was found.\nPlease visit https://jsoup.org/ and download the latest version in order to parse a URL.");
+				System.exit(0);
 			} catch (Exception e) {
 				imageFileName = "WordcloudURL.png";
 			}
@@ -74,17 +77,21 @@ public class Menu {
 		boolean fileExists = false;
 		
 		do {	
-			System.out.print("Enter the name of the input file: ");
-			userInput = console.nextLine();
+			System.out.print("Enter the path to the input file: ");
+			userInput = console.nextLine().trim();
 
 			// verify that the file exists
 			if (new File(userInput).isFile())
 				fileExists = true;
 			else
-				System.out.printf("The file \"%s\" could not be found. Try again.\n", userInput);
+				System.out.printf("\"%s\" could not be found. Try again.\n", userInput);
 		} while (!fileExists);
 		
 		inputFileName = userInput;
+	}
+	
+	public String getURL() {
+		return url;
 	}
 	
 	public void setURL() {
@@ -92,25 +99,23 @@ public class Menu {
 		boolean invalid = true;
 		
 		do {
-			System.out.print("Enter the (full) URL you want to parse: ");
-			url = console.next();
+			System.out.print("Enter the URL you want to parse: ");
+			url = console.next().trim();
 			
+			if (!url.startsWith("http://") && !url.startsWith("https://"))
+				url = "http://" + url;
+
 			try {
 				System.out.println("Connecting...");
-				Jsoup.connect(url);
+			    new URL(url).openConnection().connect();
+			} catch (Exception e) {
+			    System.out.println("[Error] Unable connect to "+ url +"\nCheck your network connection and make sure the URL entered is valid.");
+			    continue;
 			}
-			catch (IllegalArgumentException e) {
-				System.out.println("That is not a valid URL. Try again.");
-				continue;
-			}	
 			
 			invalid = false;
 			this.url = url;
 		} while(invalid);
-	}
-	
-	public String getURL() {
-		return url;
 	}
 
 	public String getImageFileName() {
@@ -121,13 +126,16 @@ public class Menu {
 	public void setImageFileName() {
 		Scanner console = new Scanner(System.in);
 		boolean invalid = true;
+		String input;
 		
 		do {
-			System.out.print("Enter a name for the PNG file: ");
-			imageFileName = removeInvalidChars(console.nextLine()).trim();
+			System.out.printf("Enter a name for the PNG file (current is \"%s\"): ", imageFileName);
+			input = console.nextLine().trim();
 			
-			if (!imageFileName.isEmpty())
+			if (!input.isEmpty()) {
+				imageFileName = removeInvalidChars(input);
 				invalid = false;
+			}
 		} while (invalid);
 		
 		// Append .png to the filename entered
@@ -141,7 +149,7 @@ public class Menu {
 		return maxWords;
 	}
 
-	// Returns the maximum number of words to display.
+	// Sets the maximum number of words to display.
 	public void setMaxWords() {
 		int maxWords = this.maxWords;
 		boolean invalid = true;
@@ -228,34 +236,55 @@ public class Menu {
 		return true;
 	}
 
-	// Open the ignorewords.txt file in the default text editor
+	// Opens the ignorewords.txt file in the default text editor
 	public void editIgnoreFile() {		
 		if (Desktop.isDesktopSupported()) {
-			File ignoreFile = new File(Parser.getIgnoreFileName());
 			try {
-				Desktop.getDesktop().edit(ignoreFile);
+				Desktop.getDesktop().edit(new File(Parser.getIgnoreFileName()));
 			} catch (IllegalArgumentException e) {
 				System.out.printf("[Error] Cannot open the file \"%s\". File not found.\n", Parser.getIgnoreFileName());
-			} catch (IOException e) {
+			} catch (UnsupportedOperationException e) {
+				System.out.printf("[Error] Cannot open the file \"%s\". Action not supported on the current platform.\n", Parser.getIgnoreFileName());
+			} catch (Exception e) {
 				System.out.printf("[Error] Cannot open the file \"%s\".\n", Parser.getIgnoreFileName());
 			}
 		}
 		else {
-			System.out.printf("[Error] Cannot open the file \"%s\" (Desktop not supported).\n", Parser.getIgnoreFileName());
+			System.out.printf("[Error] Cannot open the file \"%s\". Desktop not supported.\n", Parser.getIgnoreFileName());
 		}	
 	}
 	
-	// Removes any illegal characters in (Windows) filename & replaces them with underscores.
+	// Ask to open the outputted png file in the default image viewer
+	public void openImgFile() {
+		if (new File(imageFileName).isFile()) {
+			System.out.print("Do you want to view the output image file (y/N)? ");
+			
+			if (Character.toUpperCase(console.next().charAt(0)) == 'Y') {
+				if (Desktop.isDesktopSupported()) {
+					try {
+						Desktop.getDesktop().open(new File(imageFileName));
+					} catch (IllegalArgumentException e) {
+						System.out.printf("[Error] Cannot open the file \"%s\". File not found.\n", imageFileName);
+					} catch (UnsupportedOperationException e) {
+						System.out.printf("[Error] Cannot open the file \"%s\". Action not supported on the current platform.\n", imageFileName);
+					} catch (Exception e) {
+						System.out.printf("[Error] Cannot open the file \"%s\".\n", imageFileName);
+					} 
+				}
+				else
+					System.out.printf("[Error] Cannot open the file \"%s\". Desktop not supported.\n", imageFileName);
+			}
+		}
+	}
+	
+	// Removes any illegal characters in (Windows) filenames & replaces them with underscores.
 	private String removeInvalidChars(String filename) {
 		// Source: CoderCroc - https://stackoverflow.com/a/31564206
 		return filename.replaceAll("[\\\\\\\\/:*?\\\"<>|]", "_");
 	}
 	
 	public boolean isContentFromFile() {
-		if (contentIsFromFile)
-			return true;
-		else 
-			return false;
+		return contentIsFromFile ? true : false;
 	}
 
 	@Override

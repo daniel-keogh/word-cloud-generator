@@ -1,10 +1,12 @@
 package ie.gmit.sw;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -25,7 +27,7 @@ public class Parser {
 	private Set<String> ignoreSet = new HashSet<>();
 	private Map<String, Integer> map = new HashMap<>();
 	private Queue<Word> wordQ = new PriorityQueue<>();
-
+	
 	public static String getIgnoreFileName() {
 		return IGNORE_FILE_NAME;
 	}
@@ -38,8 +40,8 @@ public class Parser {
 		return map.size();
 	}
 	
-	// Add each word in the ignorewords.txt file (if it exists) to a Set (Use a set since there's no need for duplicates).
-	// Hash tables (Map or Set) store objects at arbitrary locations and offer an average O(1) for insertion.
+	// Add each word in the ignorewords.txt file (if it exists) to a Set (use a set since there's no need for duplicates).
+	// Hash tables store objects at arbitrary locations and offer an average O(1) for insertion.
 	public void parseIgnoreFile() {
 		try {
 			BufferedReader ignoreFile = new BufferedReader(new FileReader(IGNORE_FILE_NAME));
@@ -47,14 +49,13 @@ public class Parser {
 
 			while ((next = ignoreFile.readLine()) != null) {
 
-				if (next.isEmpty())
+				if (next.trim().isEmpty())
 					continue;
 
 				ignoreSet.add(next.toLowerCase()); // Adding to a HashSet is O(1)
 			}
 			ignoreFile.close();
 		} catch (IOException e) {
-			// no ignorewords.txt file found
 			System.out.printf("[Warning] No \"%s\" file was found. Proceed anyway (y/N)? ", IGNORE_FILE_NAME);
 
 			if (Character.toUpperCase(console.next().charAt(0)) != 'Y')
@@ -67,25 +68,22 @@ public class Parser {
 		BufferedReader inputFile = new BufferedReader(new InputStreamReader(in));
 		String next = null;
 
-		// O(n^2)
+		// O(n^2) - Loop within a loop
 		while ((next = inputFile.readLine()) != null) {
-
-			// Add every word in each line of the file to an array, using spaces as delimiters.
-			String[] words = next.toLowerCase().split(" ");
+			String[] words = next.toLowerCase().split(" "); // Add every word in each line of the file to an array, using spaces as delimiters. O(n)
 			processWords(words);
 		}
 		sortMap();
 		in.close();
 	}
 
-	public void parseInput(String url) throws Exception {
+	public void parseInput(String url) {
 
 		try {
 			Document doc = Jsoup.connect(url).get();
-			String content = doc.select("p").text(); // extract the text between all <p> tags
-
-			// Add every word in content to an array, using spaces as delimiters.
-			String[] words = content.toLowerCase().split(" ");
+			 // extract the text between selected tags
+			String content = doc.select("p, h1, h2, h3, h4, h5, h6").text();
+			String[] words = content.toLowerCase().split(" ");	// Add every word in content to an array, using spaces as delimiters. O(n)
 			processWords(words);
 			sortMap();	
 		}
@@ -97,8 +95,8 @@ public class Parser {
 	
 	private void processWords(String[] words) {
 		for (String word : words) {
-			word = stripPunctuation(word);
-			// Searching a HashSet is O(1).
+			word = stripPunctuation(word).trim();
+			// Searching a HashSet (i.e. calling contains()) is O(1).
 			if (!ignoreSet.contains(word)) { // Only add words that aren't blacklisted.					
 				if (!word.isEmpty())
 					updateMap(word);
@@ -125,13 +123,31 @@ public class Parser {
 	}
 	
 	// Add each word in the Map to a PriorityQueue. 
-	// Words are sorted each time a new element is added based on their frequencies by using the compareTo() method defined in Word.java
+	// Words are sorted each time a new element is added based on their frequencies by using the Comparable implemented in Word.java
 	private void sortMap() {
 		Set<String> keys = map.keySet(); // Add each key contained in the Map to a Set. O(1)
 	
 		// Iterate over each of the keys in the Set, instantiate a new Word object, and add it to the PriorityQueue. 
-		// O(n log n)
+		// O(n log n) 
 		for(String key : keys)
 			wordQ.offer(new Word(key, map.get(key))); // Offering to a PriorityQueue has a time complexity of O(log n) 
+	}
+	
+	public void outputToFile(String filename, int numWords) throws FileNotFoundException {
+		int counter = 0;
+		PrintWriter pw = new PrintWriter(filename);
+
+		// Copy the Queue so the words in wordQ aren't polled prematurely
+		Queue<Word> copyQ = new PriorityQueue<Word>();
+		// Add all of the elements in wordQ to copyQ
+		// Calling add() on a PriorityQueue is O(log n) so addAll() is O(k log n), where k is the number of elements in wordQ
+		copyQ.addAll(wordQ);
+		
+		// O(n log n) - Because there are n iterations & polling from a PriorityQueue is O(log n)
+		while(counter < copyQ.size() && counter < numWords) {
+			pw.println(copyQ.poll());
+			counter++;
+		}
+		pw.close();
 	}
 }

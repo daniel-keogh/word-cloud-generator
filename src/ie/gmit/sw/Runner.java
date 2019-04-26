@@ -1,10 +1,7 @@
 package ie.gmit.sw;
 
-import java.awt.Desktop;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Queue;
 import java.util.Scanner;
 
@@ -16,7 +13,8 @@ public class Runner {
 	
 	public static void main(String[] args) throws Exception {
 		
-		double runTime;
+		boolean outWordsToFile;
+		double startTime;
 		
 		Menu menu = new Menu();
 		menu.displayMenu();
@@ -24,7 +22,10 @@ public class Runner {
 		Parser parser = new Parser();
 		parser.parseIgnoreFile();
 		
-		runTime = System.currentTimeMillis();
+		System.out.print("Do you want to output the words and their respective frequencies to a file (y/N)? ");
+		outWordsToFile = (Character.toUpperCase(console.next().charAt(0)) == 'Y') ? true : false;
+		
+		startTime = System.currentTimeMillis();
 		
 		if (menu.isContentFromFile())
 			parser.parseInput(new FileInputStream(menu.getInputFileName()));
@@ -33,52 +34,14 @@ public class Runner {
 
 		Queue<Word> wordQ = parser.getWordQueue();
 		
-		//outputToFile(wordQ);
+		if (outWordsToFile)
+			parser.outputToFile(menu.getImageFileName().substring(0, menu.getImageFileName().lastIndexOf('.')) + "_Freq.txt", menu.getMaxWords());
 		
 		ImageGenerator ig = new ImageGenerator();
 		ig.drawWords(wordQ, menu.getMaxWords());
 		ImageIO.write(ig.getImage(), "png", new File(menu.getImageFileName()));
 		
-		System.out.printf("%d unique words read in %.2f (s).\n", parser.numUniqueWordsRead(), procTime(runTime));
-		openImgFile(menu);
-	}
-	
-	// Ask the user if they want to open the outputted png file in their default image viewer
-	private static void openImgFile(Menu menu) {
-		
-		if (new File(menu.getImageFileName()).isFile()) {
-			System.out.print("Do you want to view the output file (y/N)? ");
-			
-			if (Character.toUpperCase(console.next().charAt(0)) == 'Y') {
-				if (Desktop.isDesktopSupported()) {
-					File pngFile = new File(menu.getImageFileName());
-					try {
-						Desktop.getDesktop().open(pngFile);
-					} catch (IllegalArgumentException e) {
-						System.out.printf("[Error] Cannot open the file \"%s\". File not found.\n", menu.getImageFileName());
-					} catch (IOException e) {
-						System.out.printf("[Error] Cannot open the file \"%s\".\n", menu.getImageFileName());
-					} 
-				}
-				else {
-					System.out.printf("[Error] Cannot open the file \"%s\" (Desktop not supported).\n", menu.getImageFileName());
-				}	
-			}
-		}
-	}
-	
-	private static double procTime(double start) {
-		return (System.currentTimeMillis() - start) / 1000;
-	}
-	
-	// Output all the words in the PriorityQueue to a file (debugging).
-	private static void outputToFile(Queue<Word> wordQ) throws Exception {
-		int counter = 0;
-		PrintWriter pw = new PrintWriter("DEBUG.txt");
-		while(counter < wordQ.size()) { // calling size() is O(1)
-			pw.println(wordQ.poll()); // polling from a PriorityQueue is O(log n)
-			counter++;
-		}
-		pw.close();
+		System.out.printf("\n%d unique words read in %.2f (s).\n", parser.numUniqueWordsRead(), ProcTime.calc(startTime));
+		menu.openImgFile();
 	}
 }
