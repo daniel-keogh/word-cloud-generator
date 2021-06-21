@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="b3af9d72-d41c-4196-911a-2df2834ca0dc" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/ie/gmit/sw/Colours.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/ie/gmit/sw/GetRandom.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/ie/gmit/sw/ImageGenerator.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/ie/gmit/sw/Menu.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/ie/gmit/sw/Parser.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/ie/gmit/sw/ProcTime.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/ie/gmit/sw/Runner.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/ie/gmit/sw/Runner.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/ie/gmit/sw/Word.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/ie/gmit/sw/Word.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ignorewords.txt" beforeDir="false" afterPath="$PROJECT_DIR$/ignorewords.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ie/gmit/sw/Colours.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ie/gmit/sw/ui/Colours.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ie/gmit/sw/GetRandom.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ie/gmit/sw/ImageGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ie/gmit/sw/ui/ImageGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ie/gmit/sw/Menu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ie/gmit/sw/ui/Menu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ie/gmit/sw/Parser.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ie/gmit/sw/ProcTime.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ie/gmit/sw/Runner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ie/gmit/sw/Runner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ie/gmit/sw/Word.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ie/gmit/sw/Word.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="wkm0vq81" />
+  </component>
+  <component name="ProjectId" id="1uG5oyiVqY1snbbX4u4E1gzVYf3" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="dart.analysis.tool.window.visible" value="false" />
+    <property name="show.migrate.to.gradle.popup" value="false" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RunManager">
+    <configuration name="Runner" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ie.gmit.sw.Runner" />
+      <module name="WordCloudGenerator" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="ie.gmit.sw.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Runner" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b3af9d72-d41c-4196-911a-2df2834ca0dc" name="Default Changelist" comment="" />
+      <created>1624279299265</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1624279299265</updated>
+      <workItem from="1624279333633" duration="854000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
